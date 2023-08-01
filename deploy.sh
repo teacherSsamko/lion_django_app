@@ -1,6 +1,6 @@
 # git clone
 echo "start to clone"
-git clone https://github.com/teacherSsamko/lion_django_app.git
+git clone https://github.com/teacherSsamko/lion_django_app.git lion_django_app
 cd lion_django_app
 
 # venv 설치
@@ -18,7 +18,3 @@ source venv/bin/activate
 # pip install
 echo "start to install requirements"
 pip install -r requirements.txt
-
-# runserver
-echo "start to runserver"
-cd lion_app && python manage.py runserver 0.0.0.0:8000
