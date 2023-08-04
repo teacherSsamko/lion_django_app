@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  lion-app:
+    container_name: lion-app-dc
+    build:
+      context: lion_app
+      dockerfile: Dockerfile
+    image: lion-app
+    ports:
+      - 8000:8000
+    volumes:
+      - "staticfiles:/var/www/html/static"
+
+  nginx:
+    depends_on:
+      - lion-app
+    container_name: lion-nginx-dc
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx_ubt
+    image: lion-nginx
+    ports:
+      - "8888:80"
+    volumes:
+      - "staticfiles:/var/www/html/static"
+
+volumes:
+  staticfiles:

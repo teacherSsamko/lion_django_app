@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-9)1ht#_fpvwt&(+f0i4^sf#l=z^jc=+&b!n@o=iv38pu1vn(#&
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "175.45.204.90",
+    "localhost",
 ]
 
 
@@ -118,6 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/var/www/html/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
