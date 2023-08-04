@@ -29,6 +29,10 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8888",
+]
+
 
 # Application definition
 
