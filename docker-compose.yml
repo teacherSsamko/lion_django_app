@@ -12,6 +12,8 @@ services:
     volumes:
       - ./lion_app:/app
       - "staticfiles:/var/www/html/static"
+    command:
+      - "/start"
 
   nginx:
     depends_on:
