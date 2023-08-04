@@ -45,6 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+## Third party Apps
+INSTALLED_APPS += []
+
+## Created Apps
+INSTALLED_APPS += [
+    'Forum',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
