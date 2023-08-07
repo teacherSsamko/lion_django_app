@@ -14,6 +14,8 @@ services:
       - "staticfiles:/var/www/html/static"
     command:
       - "/start"
+    env_file:
+      - ./prod.env
 
   nginx:
     depends_on:
@@ -22,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx_ubt
+      args:
+        LOCAL_IP: "223.130.134.180"
     image: lion-nginx
     ports:
       - "8888:80"
