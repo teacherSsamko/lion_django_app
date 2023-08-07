@@ -1,10 +1,23 @@
 FROM ubuntu:22.04
 
+ARG LOCAL_IP
+ENV SERVER_NAME $LOCAL_IP
+
 RUN apt-get update && apt install -y nginx vim
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/lib/nginx
 
-COPY ./lion_app/lion_app/django.nginx /etc/nginx/sites-available/django
+# COPY ./lion_app/lion_app/django.nginx /etc/nginx/sites-available/django
+RUN echo "server {\n\
+    listen 80;\n\
+    server_name localhost ${SERVER_NAME};\n\
+\n\
+    location / {\n\
+        proxy_pass http://lion-app:8000;\n\
+        proxy_set_header Host \$host;\n\
+        proxy_set_header X-Real-IP \$remote_addr;\n\
+    }\n\
+}" > /etc/nginx/sites-available/django
 RUN ln -s /etc/nginx/sites-available/django /etc/nginx/sites-enabled/django
 
 WORKDIR /etc/nginx
