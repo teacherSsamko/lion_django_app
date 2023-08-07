@@ -17,7 +17,9 @@ services:
     command:
       - "/start"
     env_file:
-      - ./.env
+      - ./.envs/local/django
+      - ./.envs/local/db
+      - ./.envs/local/server
 
   nginx:
     restart: always
@@ -33,12 +35,12 @@ services:
     volumes:
       - "staticfiles:/var/www/html/static"
     env_file:
-      - ./.env
+      - ./.envs/local/server
 
   db:
     image: postgres:15
     env_file:
-      - ./.env
+      - ./.envs/local/db
     ports:
       - 5432:5432
 
