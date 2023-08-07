@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+sed -i "s/\$LOCAL_IP/$LOCAL_IP/g" /etc/nginx/sites-available/django
+service nginx restart

@@ -24,13 +24,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx_ubt
-      args:
-        LOCAL_IP: "223.130.134.180"
     image: lion-nginx
     ports:
       - "8888:80"
     volumes:
       - "staticfiles:/var/www/html/static"
+    env_file:
+      - ./prod.env
 
 volumes:
   staticfiles:
