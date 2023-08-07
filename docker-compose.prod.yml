@@ -15,7 +15,9 @@ services:
     command:
       - "/start"
     env_file:
-      - ./prod.env
+      - ./.envs/prod/django
+      - ./.envs/prod/db
+      - ./.envs/prod/server
 
   nginx:
     depends_on:
@@ -30,7 +32,7 @@ services:
     volumes:
       - "staticfiles:/var/www/html/static"
     env_file:
-      - ./prod.env
+      - ./.envs/prod/server
 
 volumes:
   staticfiles:
