@@ -6,4 +6,5 @@ from blog.urls import urlpatterns as blog_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include(blog_urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]
