@@ -98,6 +98,9 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
         'HOST': os.getenv('DB_HOST', 'db'),
+        'OPTIONS': {
+            'options': '-c search_path=likelion,public',
+        },
     }
 }
 
