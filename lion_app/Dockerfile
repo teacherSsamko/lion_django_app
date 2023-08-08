@@ -25,5 +25,5 @@ WORKDIR ${APP_HOME}
 RUN if [-e /var/www/html/static ]; then rm -rf /var/www/html/static; fi
 RUN python manage.py collectstatic -c
 
-
+ENTRYPOINT [ "/entrypoint" ]
 CMD [ "python", "--version" ]
