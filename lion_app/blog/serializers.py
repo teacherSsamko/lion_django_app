@@ -1,8 +1,11 @@
+import os
+
 from rest_framework import serializers
 from pymongo import MongoClient
 
 
-client = MongoClient(host="mongo")
+MONGO_HOST = os.getenv("MONGO_HOST", "mongo")
+client = MongoClient(host=MONGO_HOST)
 db = client.likelion
 
 
