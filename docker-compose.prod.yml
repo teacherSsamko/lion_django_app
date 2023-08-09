@@ -10,6 +10,7 @@ services:
     ports:
       - 8000:8000
     volumes:
+      - ~/.aws:/root/.aws:ro
       - ./lion_app:/app
       - "staticfiles:/var/www/html/static"
     command:
