@@ -12,9 +12,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from common.aws import get_secret
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_NAME = os.getenv('AWS_SECRET_NAME', 'like/lion/lecture')
+secret = get_secret(SECRET_NAME)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -58,7 +62,6 @@ INSTALLED_APPS += [
 ## Created Apps
 INSTALLED_APPS += [
     'Forum',
-    'blog',
 ]
 
 MIDDLEWARE = [
@@ -95,17 +98,29 @@ WSGI_APPLICATION = 'lion_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+#{"username":"postgres","password":"postgres","engine":"postgres","host":"127.0.0.1","port":"5432","dbname":"postgres"}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.getenv('DB_HOST', 'db'),
+        'NAME': secret.get('dbname', 'postgres'),
+        'USER': secret.get('username', 'postgres'),
+        'PASSWORD': secret.get('password', 'postgres'),
+        'HOST': secret.get('host', 'db'),
         'OPTIONS': {
             'options': '-c search_path=likelion,public',
         },
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.getenv('POSTGRES_DB', 'postgres'),
+    #     'USER': os.getenv('POSTGRES_USER', 'postgres'),
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+    #     'HOST': os.getenv('DB_HOST', 'db'),
+    #     'OPTIONS': {
+    #         'options': '-c search_path=likelion,public',
+    #     },
+    # }
 }
 
 

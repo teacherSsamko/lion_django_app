@@ -12,6 +12,7 @@ services:
     ports:
       - 8000:8000
     volumes:
+      - ~/.aws:/root/.aws:ro
       - ./lion_app:/app
       - "staticfiles:/var/www/html/static"
     command:
@@ -20,6 +21,8 @@ services:
       - ./.envs/local/django
       - ./.envs/local/db
       - ./.envs/local/server
+    environment:
+      - AWS_SECRET_NAME=like/lion/lecture
 
   nginx:
     restart: always
@@ -46,14 +49,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  mongo:
-    image: mongo:4.4.6
-    ports:
-      - 27017:27017
-    volumes:
-      - mongo_data:/data/db
-
 volumes:
   staticfiles:
   postgres_data:
-  mongo_data:
