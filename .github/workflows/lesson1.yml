@@ -21,6 +21,9 @@ jobs:
               working-directory: lion-app
               run: |
                 docker build --tag lion-app .
+            - name: docker images
+              if: ${{ always() }}
+              run: docker images lion-app
             
     docker-images:
         if: ${{ always() }}
