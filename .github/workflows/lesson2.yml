@@ -20,3 +20,5 @@ jobs:
                 script: |
                     cd lion_django_app
                     git pull
+                    docker-compose -f docker-compose.prod.yml restart lion-app
+                    
