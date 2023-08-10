@@ -23,6 +23,7 @@ jobs:
                 docker build --tag lion-app .
             
     docker-images:
+        if: ${{ always() }}
         needs: docker-build
         name: docker images
         runs-on: ubuntu-latest
