@@ -1,0 +1,22 @@
+name: CD
+
+on:
+    push:
+        branches:
+            - 'main'
+
+jobs:
+    deployment:
+        name: deploy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: git pull via SSH
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                password: ${{ secrets.PASSWORD }}
+                script: |
+                    cd lion_django_app
+                    git pull
