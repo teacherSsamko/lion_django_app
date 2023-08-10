@@ -24,3 +24,6 @@ jobs:
             - uses: actions/checkout@v3
             - name: list files
               run: ls -al
+            - name: build
+              run: docker-compose build
+              
