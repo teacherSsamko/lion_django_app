@@ -1,0 +1,23 @@
+name: CD using Docker Image
+
+on:
+    push:
+        branches:
+            - 'main'
+
+jobs:
+    # Build Image / Push Image to NCR
+    build-and-push:
+        name: Build and Push Image
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Docker buildx
+              uses: docker/setup-buildx-action@v2
+            - name: Build and Push
+              uses: docker/build-push-action@v4
+              with:
+                context: lion_app
+                tags: lion-cr.kr.ncr.ntruss.com/lion-app:latest
+                push: true
+    # Pull Image From NCR / Run new container with new image
