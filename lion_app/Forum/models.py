@@ -8,6 +8,7 @@ class Topic(models.Model):
     owner = models.ForeignKey(User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    posts: models.QuerySet["Post"]
 
     def __str__(self):
         return self.name
