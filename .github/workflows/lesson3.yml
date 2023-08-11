@@ -5,6 +5,9 @@ on:
         branches:
             - 'main'
 
+env:
+    IMAGE_TAG: ${{ vars.NCR_REGISTRY }}/lion-app:latest
+
 jobs:
     build-and-push:
         name: Build and Push Image
@@ -23,6 +26,25 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                 context: lion_app
-                tags: ${{ vars.NCR_REGISTRY }}/lion-app:latest
+                tags: ${{ env.IMAGE_TAG }}
                 push: true
-    # Pull Image From NCR / Run new container with new image
+
+    deployment:
+        name: deploy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: pull and run the image
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                password: ${{ secrets.PASSWORD }}
+                script: |
+                    cd lion_django_app
+                    docker login \
+                    ${{ vars.NCR_REGISTRY }} \
+                    -u ${{ secrets.NCR_ACCESS_KEY_ID }} \
+                    -p ${{ secrets.NCR_SECRET_KEY }}
+                    docker pull ${{ env.IMAGE_TAG }}
+                    docker-compose -f docker-compose.prod.yml up -d
