@@ -48,3 +48,5 @@ jobs:
                     -p ${{ secrets.NCR_SECRET_KEY }}
                     docker pull ${{ env.IMAGE_TAG }}
                     docker-compose -f docker-compose.prod.yml up -d
+            - name: echo IMAGE_TAG
+              run: echo $IMAGE_TAG
