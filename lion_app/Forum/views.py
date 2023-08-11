@@ -5,13 +5,13 @@ from .models import Topic, Post
 from .serializers import TopicSerializer, PostSerializer
 
 
-@extend_schema(tags=["Topic"])
+@extend_schema(tags=["Topic", "Forum"])
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
 
 
-@extend_schema(tags=["Post"])
+@extend_schema(tags=["Post", "Forum"])
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
