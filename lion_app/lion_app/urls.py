@@ -8,8 +8,6 @@ from blog.urls import router as blog_router
 from Forum.urls import router as forum_router
 
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include(blog_router.urls)),
