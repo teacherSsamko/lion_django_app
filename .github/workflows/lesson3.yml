@@ -6,7 +6,6 @@ on:
             - 'main'
 
 jobs:
-    # Build Image / Push Image to NCR
     build-and-push:
         name: Build and Push Image
         runs-on: ubuntu-latest
@@ -17,13 +16,13 @@ jobs:
             - name: Login to NCR
               uses: docker/login-action@v2
               with:
-                registry: lion-cr.kr.ncr.ntruss.com
+                registry: ${{ vars.NCR_REGISTRY }}
                 username: ${{ secrets.NCR_ACCESS_KEY_ID }}
                 password: ${{ secrets.NCR_SECRET_KEY }}
             - name: Build and Push
               uses: docker/build-push-action@v4
               with:
                 context: lion_app
-                tags: lion-cr.kr.ncr.ntruss.com/lion-app:latest
+                tags: ${{ vars.NCR_REGISTRY }}/lion-app:latest
                 push: true
     # Pull Image From NCR / Run new container with new image
