@@ -30,6 +30,7 @@ jobs:
                 push: true
 
     deployment:
+        needs: build-and-push
         name: deploy
         runs-on: ubuntu-latest
         steps:
