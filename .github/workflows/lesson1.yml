@@ -12,6 +12,7 @@ jobs:
               run: echo "This event is ${{github.event_name}}"
 
     docker-build:
+        if: ${{ !github.event.act }}
         name: docker build
         runs-on: ubuntu-latest
         steps:
@@ -36,7 +37,7 @@ jobs:
                 docker images lion-app
             
     docker-images:
-        if: ${{ always() }}
+        if: ${{ !github.event.act }}
         needs: docker-build
         name: docker images
         runs-on: ubuntu-latest

@@ -1,0 +1,5 @@
+--secret-file .act_secret
+--var-file .act_env
+-e event.json
+-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
+--container-architecture linux/amd64
