@@ -4,12 +4,11 @@ on:
     workflow_dispatch:
 
 jobs:
-    get-name:
-        name: echo name
+    get-workflow-name:
+        name: echo workflow name
         runs-on: ubuntu-latest
         steps:
             - run: echo "This workflow is ${{ github.workflow }}"
 
     call-workflow:
         uses: ./.github/workflows/lesson4.yml
-        

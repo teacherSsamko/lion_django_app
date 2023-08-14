@@ -4,10 +4,15 @@ on:
     workflow_call:
 
 jobs:
+    get-workflow-name:
+        name: echo workflow name
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "This workflow is ${{ github.workflow }}"
+            
     greeting:
         name: greeting
         runs-on: ubuntu-latest
         steps:
             - name: greeting
               run: echo "Hello, Stranger"
-              
