@@ -12,3 +12,5 @@ jobs:
 
     call-workflow:
         uses: ./.github/workflows/lesson4.yml
+        with:
+            person: Eunsub
