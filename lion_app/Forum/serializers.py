@@ -33,8 +33,7 @@ class TopicSerializer(serializers.ModelSerializer):
         )
 
     posts = serializers.SerializerMethodField()
-    
+
     def get_posts(self, obj: Topic):
         posts = obj.posts.all()
         return PostSerializer(posts, many=True).data
-    
