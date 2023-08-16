@@ -38,35 +38,30 @@ jobs:
                 tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.timestamp.outputs.timestamp }}"
                 push: true
 
-    deployment:
+    deploy-staging:
         needs: build-and-push
-        name: deploy
+        name: deploy to staging
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
             - name: pull and run the image
               uses: appleboy/ssh-action@v1.0.0
               with:
-                host: ${{ secrets.HOST }}
+                host: ${{ secrets.HOST_STAGING }}
                 username: ${{ secrets.USERNAME }}
                 password: ${{ secrets.PASSWORD }}
                 script: |
-                    cd lion_django_app
                     docker login \
                     ${{ vars.NCR_REGISTRY }} \
                     -u ${{ secrets.NCR_ACCESS_KEY_ID }} \
                     -p ${{ secrets.NCR_SECRET_KEY }}
                     docker pull ${{ env.IMAGE_TAG }}
-                    # docker-compose -f docker-compose.prod.yml up -d
                     docker stop lion-app && docker rm lion-app
                     docker run -p 8000:8000 -d \
                     --name lion-app \
                     -v ~/.aws:/root/.aws:ro \
-                    --env-file .envs/prod/django \
-                    --env-file .envs/prod/db \
-                    --env-file .envs/prod/server \
-                    lion-cr.kr.ncr.ntruss.com/lion-app:latest \
-                    /start
+                    --env-file .env \
+                    lion-cr.kr.ncr.ntruss.com/lion-app:latest
 
             - name: echo IMAGE_TAG
               run: echo $IMAGE_TAG
