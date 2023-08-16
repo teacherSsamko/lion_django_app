@@ -23,4 +23,4 @@ RUN chmod +x /entrypoint
 WORKDIR ${APP_HOME}
 
 ENTRYPOINT [ "/entrypoint" ]
-CMD [ "python", "--version" ]
+CMD [ "/start" ]
