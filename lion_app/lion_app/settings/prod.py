@@ -1,7 +1,9 @@
-from base import *
+import os
+
+from .base import *
 
 
-SECRET_KEY = ""
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 DEBUG = False
 
