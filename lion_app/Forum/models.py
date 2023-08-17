@@ -27,12 +27,12 @@ class Post(models.Model):
 
 
 class TopicGroupUser(models.Model):
-    class groupChoices(models.IntegerChoices):
+    class GroupChoices(models.IntegerChoices):
         common = 0
         admin = 1
 
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    group = models.IntegerField(default=0, choices=groupChoices.choices)
+    group = models.IntegerField(default=0, choices=GroupChoices.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
