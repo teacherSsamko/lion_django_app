@@ -23,20 +23,15 @@ class TopicViewSet(viewsets.ModelViewSet):
         topic: Topic = self.get_object()
         user = request.user
 
-        if topic.is_private:
-            qs = TopicGroupUser.objects.filter(
-                group__lte=TopicGroupUser.GroupChoices.common,
-                topic=topic,
-                user=user,
+        if not topic.can_be_access_by(user):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                data="This user is not allowed to read this topic",
             )
-            if not qs.exists():
-                return Response(
-                    status=status.HTTP_401_UNAUTHORIZED,
-                    data="This user is not allowed to read this topic",
-                )
 
         posts = topic.posts
         serializer = PostSerializer(posts, many=True)
+
         return Response(data=serializer.data)
 
 
@@ -50,17 +45,12 @@ class PostViewSet(viewsets.ModelViewSet):
         data = request.data
         topic_id = data.get("topic")
         topic = get_object_or_404(Topic, id=topic_id)
-        if topic.is_private:
-            qs = TopicGroupUser.objects.filter(
-                group__lte=TopicGroupUser.GroupChoices.common,
-                topic=topic,
-                user=user,
+
+        if not topic.can_be_access_by(user):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                data="This user is not allowed to write a post on this topic",
             )
-            if not qs.exists():
-                return Response(
-                    status=status.HTTP_401_UNAUTHORIZED,
-                    data="This user is not allowed to write a post on this topic",
-                )
 
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
