@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.request import Request
@@ -40,5 +39,12 @@ class PostViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_401_UNAUTHORIZED,
                     data="This user is not allowed to write a post on this topic",
                 )
+
+        # Topic - private
+        # User1 - Unauthorized
+        # User2 - Authorized
+
+        # User1 tries to write a post on Topic => fail. 401
+        # User2 tries to write a post on Topic => success. 201
 
         return super().create(request, *args, **kwargs)
