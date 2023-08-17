@@ -35,13 +35,11 @@ class PostTest(APITestCase):
 
         # when unauthorized user tries to write a post on Topic => fail. 401
         self.client.force_login(self.unauthorized_user)
-        data["owner"] = self.unauthorized_user.pk
         res = self.client.post(reverse("post-list"), data=data)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
         # when authorized user tries to write a post on Topic => success. 201
         self.client.force_login(self.authorized_user)
-        data["owner"] = self.authorized_user.pk
         res: HttpResponse = self.client.post(reverse("post-list"), data=data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         data = json.loads(res.content)

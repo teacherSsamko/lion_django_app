@@ -40,4 +40,13 @@ class PostViewSet(viewsets.ModelViewSet):
                     data="This user is not allowed to write a post on this topic",
                 )
 
-        return super().create(request, *args, **kwargs)
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            data["owner"] = user
+            res: Post = serializer.create(data)
+            return Response(
+                status=status.HTTP_201_CREATED, data=PostSerializer(res).data
+            )
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
