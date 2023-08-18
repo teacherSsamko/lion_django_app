@@ -40,6 +40,10 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    @extend_schema(deprecated=True)
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_400_BAD_REQUEST, data="Deprecated API")
+
     def create(self, request: Request, *args, **kwargs):
         user = request.user
         data = request.data
