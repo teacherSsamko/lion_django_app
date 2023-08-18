@@ -8,8 +8,6 @@ services:
     build: 
       context: lion_app
       dockerfile: Dockerfile
-    command:
-      - "/bin/sh"
     env_file:
       - ./.envs/local/django
       - ./.envs/local/db
