@@ -62,3 +62,16 @@ class PostViewSet(viewsets.ModelViewSet):
             )
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+
+    def retrieve(self, request: Request, *args, **kwargs):
+        user = request.user
+        post: Post = self.get_object()
+        topic = post.topic
+
+        if not topic.can_be_access_by(user):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                data="This user is not allowed to read this post",
+            )
+
+        return super().retrieve(request, *args, **kwargs)
