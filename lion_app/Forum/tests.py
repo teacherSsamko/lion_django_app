@@ -69,6 +69,15 @@ class PostTest(APITestCase):
         Post.objects.get(pk=res_data["id"])
 
         # Admin => 201
+        admin = User.objects.create_user("admin")
+        TopicGroupUser.objects.create(
+            topic=self.private_topic,
+            group=TopicGroupUser.GroupChoices.admin,
+            user=admin,
+        )
+        self.client.force_login(admin)
+        res = self.client.post(reverse("post-list"), data=data)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         # Owner => 201
         self.client.force_login(self.superuser)
