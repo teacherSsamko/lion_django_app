@@ -26,7 +26,7 @@ jobs:
               run: black --check lion_app
 
     build:
-        # needs: lint
+        needs: lint
         name: Build Image
         runs-on: ubuntu-latest
         steps:
