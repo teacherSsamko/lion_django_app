@@ -44,9 +44,13 @@ jobs:
               id: timestamp
               run: echo "timestamp=$(date '+%s')" >> "$GITHUB_OUTPUT"
 
-            - name: Build and Push
-              uses: docker/build-push-action@v4
-              with:
-                context: lion_app
-                tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.timestamp.outputs.timestamp }}"
-                push: false
+            - name: Build
+              run: |
+                docker build -t test-lion:test lion_app
+
+            - name: Run Test
+              run: |
+                docker run -d -e DJANGO_SETTINGS_MODULE=lion_app.settings.test \
+                --name test \
+                test-lion:test python --version
+                docker exec test python manage.py test
