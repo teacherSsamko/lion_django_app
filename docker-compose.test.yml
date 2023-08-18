@@ -11,9 +11,9 @@ services:
     command:
       - "/bin/sh"
     env_file:
-      - ./.envs/prod/django
-      - ./.envs/prod/db
-      - ./.envs/prod/server
+      - ./.envs/local/django
+      - ./.envs/local/db
+      - ./.envs/local/server
 
   db:
     container_name: db-test
