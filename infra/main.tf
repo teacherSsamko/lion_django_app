@@ -256,3 +256,7 @@ resource "ncloud_lb_target_group_attachment" "be" {
   target_group_no = ncloud_lb_target_group.be.target_group_no
   target_no_list = [ncloud_server.be.instance_no]
 }
+
+output "lb_dns" {
+  value = ncloud_lb.be-staging.domain
+}
