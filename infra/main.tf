@@ -99,7 +99,7 @@ resource "ncloud_init_script" "be" {
     db_user = var.db_user
     db_password = var.db_password
     db_port = var.db_port
-    db_host = var.db_host
+    db_host = ncloud_public_ip.db.public_ip
     django_secret_key = var.django_secret_key
     django_settings_module = var.django_settings_module
   })
@@ -118,10 +118,6 @@ variable "db_password" {
 }
 
 variable "db_port" {
-  type = string
-}
-
-variable "db_host" {
   type = string
 }
 
