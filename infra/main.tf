@@ -83,7 +83,7 @@ resource "ncloud_server" "be" {
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
   server_product_code = data.ncloud_server_products.sm.server_products[0].product_code
   login_key_name            = ncloud_login_key.loginkey.key_name
-  init_script_no = ncloud_init_script.main.init_script_no
+  init_script_no = ncloud_init_script.be.init_script_no
 
   network_interface {
     network_interface_no = ncloud_network_interface.be.id
@@ -91,11 +91,46 @@ resource "ncloud_server" "be" {
   }
 }
 
-resource "ncloud_init_script" "main" {
-  name    = "set-server-tf"
-  content = templatefile("${path.module}/main_init_script.tftpl", {
+resource "ncloud_init_script" "be" {
+  name    = "set-be-tf"
+  content = templatefile("${path.module}/be_init_script.tftpl", {
     password = var.password
+    db = var.db
+    db_user = var.db_user
+    db_password = var.db_password
+    db_port = var.db_port
+    db_host = var.db_host
+    django_secret_key = var.django_secret_key
+    django_settings_module = var.django_settings_module
   })
+}
+
+variable "db" {
+  type = string
+}
+
+variable "db_user" {
+  type = string
+}
+
+variable "db_password" {
+  type = string
+}
+
+variable "db_port" {
+  type = string
+}
+
+variable "db_host" {
+  type = string
+}
+
+variable "django_secret_key" {
+  type = string
+}
+
+variable "django_settings_module" {
+  type = string
 }
 
 resource "ncloud_public_ip" "be" {
@@ -171,6 +206,17 @@ resource "ncloud_network_interface" "db" {
     ]
 }
 
+resource "ncloud_init_script" "db" {
+  name    = "set-db-tf"
+  content = templatefile("${path.module}/db_init_script.tftpl", {
+    password = var.password
+    db = var.db
+    db_user = var.db_user
+    db_password = var.db_password
+    db_port = var.db_port
+  })
+}
+
 
 resource "ncloud_server" "db" {
   subnet_no                 = ncloud_subnet.main.id
@@ -178,7 +224,7 @@ resource "ncloud_server" "db" {
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
   server_product_code = data.ncloud_server_products.sm.server_products[0].product_code
   login_key_name            = ncloud_login_key.loginkey.key_name
-  init_script_no = ncloud_init_script.main.init_script_no
+  init_script_no = ncloud_init_script.db.init_script_no
 
   network_interface {
     network_interface_no = ncloud_network_interface.db.id
