@@ -1,6 +1,6 @@
-# output "lb_dns" {
-#   value = ncloud_lb.be-staging.domain
-# }
+output "lb_dns" {
+  value = module.load_balancer.lb_dns
+}
 
 output "db_public_ip" {
   value = module.servers.db_public_ip
