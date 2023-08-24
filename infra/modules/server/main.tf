@@ -17,19 +17,18 @@ provider "ncloud" {
 
 ## Network
 
-resource "ncloud_vpc" "main" {
-  ipv4_cidr_block = "10.1.0.0/16"
-  name            = "lion-tf"
+data "ncloud_vpc" "main" {
+  id = var.vpc_id
 }
 
 resource "ncloud_subnet" "main" {
-  vpc_no         = ncloud_vpc.main.vpc_no
-  subnet         = cidrsubnet(ncloud_vpc.main.ipv4_cidr_block, 8, 1)
+  vpc_no         = data.ncloud_vpc.main.vpc_no
+  subnet         = cidrsubnet(data.ncloud_vpc.main.ipv4_cidr_block, 8, 1)
   zone           = "KR-2"
-  network_acl_no = ncloud_vpc.main.default_network_acl_no
+  network_acl_no = data.ncloud_vpc.main.default_network_acl_no
   subnet_type    = "PUBLIC"
   usage_type     = "GEN"
-  name           = "lion-tf-sub"
+  name           = "lion-tf-sub-${var.env}"
 }
 
 resource "ncloud_public_ip" "be" {
@@ -44,12 +43,12 @@ resource "ncloud_public_ip" "db" {
 ## Server
 
 resource "ncloud_login_key" "loginkey" {
-  key_name = "lion-test-key"
+  key_name = "lion-test-key-${var.env}"
 }
 
 resource "ncloud_access_control_group" "be" {
-  vpc_no = ncloud_vpc.main.vpc_no
-  name   = "be-acg"
+  vpc_no = data.ncloud_vpc.main.vpc_no
+  name   = "be-acg-${var.env}"
 }
 
 resource "ncloud_access_control_group_rule" "be" {
@@ -64,17 +63,17 @@ resource "ncloud_access_control_group_rule" "be" {
 }
 
 resource "ncloud_network_interface" "be" {
-  name      = "be-nic"
+  name      = "be-nic-${var.env}"
   subnet_no = ncloud_subnet.main.id
   access_control_groups = [
-    ncloud_vpc.main.default_access_control_group_no,
+    data.ncloud_vpc.main.default_access_control_group_no,
     ncloud_access_control_group.be.id,
   ]
 }
 
 resource "ncloud_server" "be" {
   subnet_no                 = ncloud_subnet.main.id
-  name                      = "be-staging"
+  name                      = "be-${var.env}"
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
   server_product_code       = data.ncloud_server_products.sm.server_products[0].product_code
   login_key_name            = ncloud_login_key.loginkey.key_name
@@ -87,7 +86,7 @@ resource "ncloud_server" "be" {
 }
 
 resource "ncloud_init_script" "be" {
-  name = "set-be-tf"
+  name = "set-be-tf-${var.env}"
   content = templatefile("${path.module}/be_init_script.tftpl", {
     password               = var.password
     db                     = var.db
@@ -134,8 +133,8 @@ data "ncloud_server_products" "sm" {
 
 ## db
 resource "ncloud_access_control_group" "db" {
-  vpc_no = ncloud_vpc.main.vpc_no
-  name   = "db-staging"
+  vpc_no = data.ncloud_vpc.main.vpc_no
+  name   = "db-${var.env}"
 }
 
 resource "ncloud_access_control_group_rule" "db" {
@@ -150,16 +149,16 @@ resource "ncloud_access_control_group_rule" "db" {
 }
 
 resource "ncloud_network_interface" "db" {
-  name      = "db-nic"
+  name      = "db-nic-${var.env}"
   subnet_no = ncloud_subnet.main.id
   access_control_groups = [
-    ncloud_vpc.main.default_access_control_group_no,
+    data.ncloud_vpc.main.default_access_control_group_no,
     ncloud_access_control_group.db.id,
   ]
 }
 
 resource "ncloud_init_script" "db" {
-  name = "set-db-tf"
+  name = "set-db-tf-${var.env}"
   content = templatefile("${path.module}/db_init_script.tftpl", {
     password    = var.password
     db          = var.db
@@ -171,7 +170,7 @@ resource "ncloud_init_script" "db" {
 
 resource "ncloud_server" "db" {
   subnet_no                 = ncloud_subnet.main.id
-  name                      = "db-staging"
+  name                      = "db-${var.env}"
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
   server_product_code       = data.ncloud_server_products.sm.server_products[0].product_code
   login_key_name            = ncloud_login_key.loginkey.key_name
