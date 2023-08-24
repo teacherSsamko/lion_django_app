@@ -26,4 +26,5 @@ module "servers" {
   NCP_ACCESS_KEY         = var.NCP_ACCESS_KEY
   NCP_SECRET_KEY         = var.NCP_SECRET_KEY
   password               = var.password
+  env                    = "staging"
 }
