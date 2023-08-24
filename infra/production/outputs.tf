@@ -1,11 +1,11 @@
 output "be_public_ip" {
-  value = ncloud_public_ip.be.public_ip
+  value = module.servers.be_public_ip
 }
 
 output "db_public_ip" {
-  value = ncloud_public_ip.db.public_ip
+  value = module.servers.db_public_ip
 }
 
 output "be_lb_dns" {
-  value = ncloud_lb.be.domain
+  value = module.load_balancer.lb_dns
 }
