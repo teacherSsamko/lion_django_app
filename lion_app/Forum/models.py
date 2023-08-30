@@ -28,7 +28,7 @@ class Post(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="posts")
     title = models.TextField(max_length=200)
     content = models.TextField()
-    image_url = models.TextField(default="")
+    image_url = models.URLField(null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
