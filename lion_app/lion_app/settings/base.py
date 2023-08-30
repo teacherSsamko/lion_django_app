@@ -167,3 +167,8 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "0.0.1",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+## NCP
+
+NCP_ACCESS_KEY = os.getenv("NCP_ACCESS_KEY", "")
+NCP_SECRET_KEY = os.getenv("NCP_SECRET_KEY", "")
