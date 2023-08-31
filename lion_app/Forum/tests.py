@@ -157,3 +157,66 @@ class PostTest(APITestCase):
 
         s3.upload_fileobj.assert_called_once()
         s3.put_object_acl.assert_called_once()
+
+    def test_delete_permission(self):
+        # setup
+        common_user = User.objects.create_user("common1")
+        admin_user = User.objects.create_user("admin1")
+        post1 = Post.objects.create(
+            topic=self.private_topic,
+            title="private",
+            content="private",
+            owner=common_user,
+        )
+        post2 = Post.objects.create(
+            topic=self.private_topic,
+            title="post2",
+            content="private",
+            owner=common_user,
+        )
+        post3 = Post.objects.create(
+            topic=self.private_topic,
+            title="post3",
+            content="private",
+            owner=common_user,
+        )
+        TopicGroupUser.objects.create(
+            topic=self.private_topic,
+            group=TopicGroupUser.GroupChoices.common,
+            user=common_user,
+        )
+        TopicGroupUser.objects.create(
+            topic=self.private_topic,
+            group=TopicGroupUser.GroupChoices.admin,
+            user=admin_user,
+        )
+        # topic owner can delete any post
+        topic_owner = self.superuser
+        self.client.force_login(topic_owner)
+        res = self.client.delete(reverse("post-detail", args=[post1.pk]))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        # admin can delete any post
+        self.client.force_login(admin_user)
+        res = self.client.delete(reverse("post-detail", args=[post2.pk]))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        # common can delete only their posts
+        ## post created by common -> success
+        self.client.force_login(common_user)
+        res = self.client.delete(reverse("post-detail", args=[post3.pk]))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        ## another post created by another common user -> fail
+        another_common_user = User.objects.create_user("another")
+        another_post = Post.objects.create(
+            topic=self.private_topic,
+            title="another",
+            content="another",
+            owner=another_common_user,
+        )
+        self.client.force_login(common_user)
+        res = self.client.delete(reverse("post-detail", args=[another_post.pk]))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        # unauthorized user can't delete any post
+        ## another post created by another common user -> fail
+        self.client.force_login(self.unauthorized_user)
+        res = self.client.delete(reverse("post-detail", args=[another_post.pk]))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
