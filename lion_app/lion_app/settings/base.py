@@ -30,6 +30,7 @@ LOCAL_IP = os.getenv("LOCAL_IP", "")
 ALLOWED_HOSTS = [
     "localhost",
     "lion-lb-18904307-df5b6f497fc4.kr.lb.naverncp.com",
+    "*",
     # LOCAL_IP,
 ]
 
@@ -63,6 +64,7 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE = [
+    "common.middleware.HealthcheckMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
