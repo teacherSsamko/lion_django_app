@@ -6,9 +6,11 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from blog.urls import router as blog_router
 from Forum.urls import router as forum_router
+from common.views import get_version
 
 
 urlpatterns = [
+    path("version/", get_version, name="version"),
     path("admin/", admin.site.urls),
     path("blog/", include(blog_router.urls)),
     path("forum/", include(forum_router.urls)),
