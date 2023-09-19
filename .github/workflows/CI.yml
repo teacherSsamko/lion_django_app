@@ -5,6 +5,8 @@ on:
     push:
         branches:
             - 'main'
+        tags:
+            - "*.*.*"
 
 env:
     IMAGE: ${{ vars.NCR_REGISTRY }}/lion-app
@@ -50,11 +52,25 @@ jobs:
               id: timestamp
               run: echo "timestamp=$(date '+%s')" >> "$GITHUB_OUTPUT"
 
+            - name: Get version
+              if: startsWith(github.ref, 'refs/tags')
+              id: version
+              run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
             - name: build-and-push
+              if: startsWith(github.ref, 'refs/heads')
               uses: docker/build-push-action@v4
               with:
                 context: lion_app
                 tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.timestamp.outputs.timestamp }}"
+                push: true
+
+            - name: build-and-push
+              if: startsWith(github.ref, 'refs/tags')
+              uses: docker/build-push-action@v4
+              with:
+                context: lion_app
+                tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.version.outputs.VERSION }}"
                 push: true
 
             - name: post test
