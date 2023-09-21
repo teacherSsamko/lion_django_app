@@ -54,6 +54,7 @@ class TopicSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "updated_at",
+            "owner",
         )
 
     posts = serializers.SerializerMethodField()
