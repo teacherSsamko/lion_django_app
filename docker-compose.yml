@@ -25,21 +25,21 @@ services:
     environment:
       - AWS_SECRET_NAME=like/lion/lecture
 
-  nginx:
-    restart: always
-    depends_on:
-      - lion-app
-    container_name: lion-nginx-dc
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx_ubt
-    image: lion-nginx
-    ports:
-      - "8888:80"
-    volumes:
-      - "staticfiles:/var/www/html/static"
-    env_file:
-      - ./.envs/local/server
+  # nginx:
+  #   restart: always
+  #   depends_on:
+  #     - lion-app
+  #   container_name: lion-nginx-dc
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.nginx_ubt
+  #   image: lion-nginx
+  #   ports:
+  #     - "8888:80"
+  #   volumes:
+  #     - "staticfiles:/var/www/html/static"
+  #   env_file:
+  #     - ./.envs/local/server
 
   db:
     image: postgres:15
@@ -49,6 +49,16 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  prom:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./monitoring:/etc/prometheus
+    command:
+      - "--web.console.templates=/etc/prometheus/consoles/"
+      - "--config.file=/etc/prometheus/prometheus.yml"
 
 volumes:
   staticfiles:
