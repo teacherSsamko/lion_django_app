@@ -14,8 +14,8 @@ class APIHandler(ABC):
 
     def _get_url(self, detail=False, pk: int = None) -> str:
         if detail:
-            return f"{self.host}{self.root_url}{pk}/"
-        return f"{self.host}{self.root_url}"
+            return f"{self.host}{self.root_url}/{pk}/"
+        return f"{self.host}{self.root_url}/"
 
     @abstractmethod
     def _generate_data(self, fk: int = None) -> dict:
@@ -25,9 +25,9 @@ class APIHandler(ABC):
         ...
 
     def _get_pk(self, model: str = None) -> int:
-        lst = self.list(model)
+        res = self.list(model)
 
-        return lst[0].pk
+        return res.json()[0].get("id")
 
     def _login(self) -> tuple:
         url = f"{self.host}/api/token/"
@@ -47,7 +47,10 @@ class APIHandler(ABC):
             "data": data,
             "headers": {"Authorization": f"Bearer {self.access}"},
         }
-        return getattr(requests, method)(**request)
+        res = getattr(requests, method)(**request)
+        if res.status_code >= 400:
+            print(res.json())
+        return res
 
     @abstractmethod
     def create(self):
@@ -88,7 +91,7 @@ class TopicAPIHandler(APIHandler):
 
     def list(self, model: str = None):
         res = self._api_call("get", self._get_url())
-        return
+        return res
 
     def update(self):
         pk = self._get_pk()
@@ -114,7 +117,7 @@ class PostAPIHandler(APIHandler):
 
     def _get_pk(self, model: str = None) -> int:
         res = self._api_call("get", f"{self.host}/forum/topic/")
-        return res.json()[0].get("pk")
+        return res.json()[0].get("id")
 
     def create(self):
         fk = self._get_pk("topic")
@@ -138,7 +141,14 @@ if __name__ == "__main__":
     topic_handler = TopicAPIHandler()
     post_handler = PostAPIHandler()
 
+    i = 0
+
     while True:
         topic_handler.create()
-        time.sleep()
-        post_handler.destroy()
+        post_handler.create()
+        topic_handler.update()
+        post_handler.detail()
+        if i % 30 == 0:
+            post_handler.destroy()
+        i += 1
+        time.sleep(1)
